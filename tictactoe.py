@@ -1,7 +1,11 @@
 import random
 
 
-def display_board(board) -> None:
+EMPTY_CELL = ' '
+name = input('Hi, please input your name: ')
+
+
+def display_board(board: list) -> None:
     print(f" {board[0][0]} | {board[0][1]} | {board[0][2]} ")
     print("---+---+---")
     print(f" {board[1][0]} | {board[1][1]} | {board[1][2]} ")
@@ -9,66 +13,73 @@ def display_board(board) -> None:
     print(f" {board[2][0]} | {board[2][1]} | {board[2][2]} ")
 
 
-def is_valid_move(board, row, col) -> bool:
+def is_valid_move(board: list, row: int, col: int) -> bool:
     if row < 0 or row > 2 or col < 0 or col > 2:
         return False
-    elif board[row][col] != ' ':
+    elif board[row][col] != EMPTY_CELL:
         return False
     else:
         return True
 
 
-def check_win(board) -> str:
+def check_win(board: list) -> str:
     for coord in range(3):
-        if board[coord][0] == board[coord][1] == board[coord][2] and board[coord][0] != ' ':
+        if board[coord][0] == board[coord][1] == board[coord][2] and board[coord][0] != EMPTY_CELL:
             return board[coord][0]
-        if board[0][coord] == board[1][coord] == board[2][coord] and board[0][coord] != ' ':
+        if board[0][coord] == board[1][coord] == board[2][coord] and board[0][coord] != EMPTY_CELL:
             return board[0][coord]
-    if board[0][0] == board[1][1] == board[2][2] and board[0][0] != ' ':
+    if board[0][0] == board[1][1] == board[2][2] and board[0][0] != EMPTY_CELL:
         return board[0][0]
-    if board[0][2] == board[1][1] == board[2][0] and board[0][2] != ' ':
+    if board[0][2] == board[1][1] == board[2][0] and board[0][2] != EMPTY_CELL:
         return board[0][2]
-    return ' '
+    return EMPTY_CELL
 
 
-def get_computer_step(board, computer_symbol, player_symbol) -> tuple[int, int]:
+def get_computer_move(board: list, computer_symbol: str) -> tuple[int, int]:
     for row in range(3):
         for col in range(3):
             if is_valid_move(board, row, col):
                 board[row][col] = computer_symbol
                 if check_win(board) == computer_symbol:
-                    return (row, col)
-                board[row][col] = ' '
+                    return row, col
+                board[row][col] = EMPTY_CELL
     for row in range(3):
         for col in range(3):
             if is_valid_move(board, row, col):
-                return (row, col)
-    return (row, col)
+                return row, col
+    return row, col
+
+
+def greetings() -> None:
+    print('*' * 10, 'Welcome to Tic-Tac-Toe game', '*' * 10)
+    print(f'Hi, {name}! Let`s play!')
+
+
+def get_player_move(board: list, symbol: str) -> dict:
+    row = int(input(f'Please enter row number, {name} (0, 1, 2): '))
+    col = int(input(f'Please enter col number, {name} (0, 1, 2): '))
+    return {"row": row, "col": col}
 
 
 def tic_tac_toe_game() -> None:
-    board = [[' ' for col in range(3)] for row in range(3)]
+    board = [[EMPTY_CELL for col in range(3)] for row in range(3)]
     symbols = ['X', 'O']
-    print('*' * 10, 'Welcome to Tic-Tac-Toe game!', '*' * 10)
-    print('Please input your name')
-    name = input()
-    print(f'Hi, {name}!')
+    greetings()
     player_symbol = random.choice(symbols)
     computer_symbol = symbols[0] if player_symbol == symbols[1] else symbols[1]
-    winner = ' '
-    while winner == ' ':
+    winner = EMPTY_CELL
+    while winner == EMPTY_CELL:
         display_board(board)
         if player_symbol == symbols[0]:
-            row = int(input(f'Please enter row number, {name} (0, 1, 2): '))
-            col = int(input(f'Please enter col number, {name} (0, 1, 2): '))
-            if is_valid_move(board, row, col):
-                board[row][col] = symbols[1]
+            player_move = get_player_move(board, player_symbol)
+            if is_valid_move(board, player_move['row'], player_move['col']):
+                board[player_move['row']][player_move['col']] = symbols[1]
                 player_symbol, computer_symbol = computer_symbol, player_symbol
             else:
                 print("Oh, it is invalid move, try again please")
                 continue
         else:
-            row, col = get_computer_step(board, computer_symbol=computer_symbol, player_symbol=player_symbol)
+            row, col = get_computer_move(board, computer_symbol=computer_symbol)
             board[row][col] = computer_symbol
             player_symbol, computer_symbol = computer_symbol, player_symbol
         winner = check_win(board)
@@ -77,5 +88,6 @@ def tic_tac_toe_game() -> None:
         print("{} won!".format(winner))
     else:
         print("It's a tie!")
+
 
 tic_tac_toe_game()
