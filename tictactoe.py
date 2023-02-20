@@ -1,8 +1,15 @@
 import random
+from constants import EMPTY_CELL
 
 
-EMPTY_CELL = ' '
-name = input('Hi, please input your name: ')
+def welcome_message() -> None:
+    print('*' * 10, 'Welcome to Tic-Tac-Toe game!', '*' * 10)
+
+
+def get_player_name() -> str:
+    name = input('Please input your name: ')
+    print(f'Hi, {name}! Let`s play!')
+    return name
 
 
 def display_board(board: list) -> None:
@@ -50,28 +57,24 @@ def get_computer_move(board: list, computer_symbol: str) -> tuple[int, int]:
     return row, col
 
 
-def greetings() -> None:
-    print('*' * 10, 'Welcome to Tic-Tac-Toe game', '*' * 10)
-    print(f'Hi, {name}! Let`s play!')
-
-
-def get_player_move(board: list, symbol: str) -> dict:
-    row = int(input(f'Please enter row number, {name} (0, 1, 2): '))
-    col = int(input(f'Please enter col number, {name} (0, 1, 2): '))
+def get_player_move(board: list, symbol: str, player_name: str) -> dict:
+    row = int(input(f'Please enter row number, {player_name} (0, 1, 2): '))
+    col = int(input(f'Please enter col number, {player_name} (0, 1, 2): '))
     return {"row": row, "col": col}
 
 
 def tic_tac_toe_game() -> None:
+    welcome_message()
+    player_name = get_player_name()
     board = [[EMPTY_CELL for col in range(3)] for row in range(3)]
     symbols = ['X', 'O']
-    greetings()
     player_symbol = random.choice(symbols)
     computer_symbol = symbols[0] if player_symbol == symbols[1] else symbols[1]
     winner = EMPTY_CELL
     while winner == EMPTY_CELL:
         display_board(board)
         if player_symbol == symbols[0]:
-            player_move = get_player_move(board, player_symbol)
+            player_move = get_player_move(board, player_symbol, player_name)
             if is_valid_move(board, player_move['row'], player_move['col']):
                 board[player_move['row']][player_move['col']] = symbols[1]
                 player_symbol, computer_symbol = computer_symbol, player_symbol
@@ -89,5 +92,6 @@ def tic_tac_toe_game() -> None:
     else:
         print("It's a tie!")
 
+if __name__ == '__main__':
+    tic_tac_toe_game()
 
-tic_tac_toe_game()
