@@ -37,7 +37,7 @@ def check_win(board: list[list[str]]) -> str:
     return EMPTY_CELL
 
 
-def get_computer_move(board: list[list[str]], computer_symbol: str) -> tuple[int, int]:
+def find_win_move(board: list[list[str]], computer_symbol: str) -> tuple[int, int]:
     for row in range(3):
         for col in range(3):
             if is_valid_move(board, row, col):
@@ -45,11 +45,22 @@ def get_computer_move(board: list[list[str]], computer_symbol: str) -> tuple[int
                 if check_win(board) == computer_symbol:
                     return row, col
                 board[row][col] = EMPTY_CELL
+    return None
+
+def find_random_move(board: list[list[str]]) -> tuple[int, int]:
     for row in range(3):
         for col in range(3):
             if is_valid_move(board, row, col):
                 return row, col
-    return row, col
+
+    return None
+
+def get_computer_move(board: list[list[str]], computer_symbol: str) -> tuple[int, int]:
+    move = find_win_move(board, computer_symbol)
+    if move:
+        return move
+
+    return find_random_move(board)
 
 
 def get_player_move(board: list[list[str]], symbol: str, player_name: str) -> dict:
