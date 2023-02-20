@@ -12,7 +12,7 @@ def get_player_name() -> str:
     return name
 
 
-def display_board(board: list) -> None:
+def display_board(board: list[list[str]]) -> None:
     print(f" {board[0][0]} | {board[0][1]} | {board[0][2]} ")
     print("---+---+---")
     print(f" {board[1][0]} | {board[1][1]} | {board[1][2]} ")
@@ -20,16 +20,11 @@ def display_board(board: list) -> None:
     print(f" {board[2][0]} | {board[2][1]} | {board[2][2]} ")
 
 
-def is_valid_move(board: list, row: int, col: int) -> bool:
-    if row < 0 or row > 2 or col < 0 or col > 2:
-        return False
-    elif board[row][col] != EMPTY_CELL:
-        return False
-    else:
-        return True
+def is_valid_move(board: list[list[str]], row: int, col: int) -> bool:
+    return not (row < 0 or row > 2 or col < 0 or col > 2) and board[row][col] == EMPTY_CELL
 
 
-def check_win(board: list) -> str:
+def check_win(board: list[list[str]]) -> str:
     for coord in range(3):
         if board[coord][0] == board[coord][1] == board[coord][2] and board[coord][0] != EMPTY_CELL:
             return board[coord][0]
@@ -42,7 +37,7 @@ def check_win(board: list) -> str:
     return EMPTY_CELL
 
 
-def get_computer_move(board: list, computer_symbol: str) -> tuple[int, int]:
+def get_computer_move(board: list[list[str]], computer_symbol: str) -> tuple[int, int]:
     for row in range(3):
         for col in range(3):
             if is_valid_move(board, row, col):
@@ -57,7 +52,7 @@ def get_computer_move(board: list, computer_symbol: str) -> tuple[int, int]:
     return row, col
 
 
-def get_player_move(board: list, symbol: str, player_name: str) -> dict:
+def get_player_move(board: list[list[str]], symbol: str, player_name: str) -> dict:
     row = int(input(f'Please enter row number, {player_name} (0, 1, 2): '))
     col = int(input(f'Please enter col number, {player_name} (0, 1, 2): '))
     return {"row": row, "col": col}
