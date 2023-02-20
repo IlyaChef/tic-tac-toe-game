@@ -20,6 +20,10 @@ def display_board(board: list[list[str]]) -> None:
     print(f" {board[2][0]} | {board[2][1]} | {board[2][2]} ")
 
 
+def initialize_board() -> list[list[str]]:
+   return [[EMPTY_CELL for col in range(3)] for row in range(3)]
+
+
 def is_valid_move(board: list[list[str]], row: int, col: int) -> bool:
     return not (row < 0 or row > 2 or col < 0 or col > 2) and board[row][col] == EMPTY_CELL
 
@@ -69,10 +73,17 @@ def get_player_move(board: list[list[str]], symbol: str, player_name: str) -> di
     return {"row": row, "col": col}
 
 
+def announce_winner(winner: str) -> None:
+    if winner:
+        print("{} won!".format(winner))
+    else:
+        print("It's a tie!")
+
+
 def tic_tac_toe_game() -> None:
     welcome_message()
     player_name = get_player_name()
-    board = [[EMPTY_CELL for col in range(3)] for row in range(3)]
+    board = initialize_board()
     symbols = ['X', 'O']
     player_symbol = random.choice(symbols)
     computer_symbol = symbols[0] if player_symbol == symbols[1] else symbols[1]
@@ -93,10 +104,9 @@ def tic_tac_toe_game() -> None:
             player_symbol, computer_symbol = computer_symbol, player_symbol
         winner = check_win(board)
     display_board(board)
-    if winner:
-        print("{} won!".format(winner))
-    else:
-        print("It's a tie!")
+    announce_winner(winner)
+
+
 
 if __name__ == '__main__':
     tic_tac_toe_game()
