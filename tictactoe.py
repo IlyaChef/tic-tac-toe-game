@@ -1,5 +1,4 @@
 import random
-from collections import namedtuple
 from constants import EMPTY_CELL
 from typing import NamedTuple
 
