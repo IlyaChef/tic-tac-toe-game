@@ -1,7 +1,12 @@
 import random
 from collections import namedtuple
-
 from constants import EMPTY_CELL
+from typing import NamedTuple
+
+
+class Move(NamedTuple):
+    row: int
+    col: int
 
 
 def welcome_message() -> None:
@@ -43,7 +48,7 @@ def check_win(board: list[list[str]]) -> str:
     return EMPTY_CELL
 
 
-def find_win_move(board: list[list[str]], computer_symbol: str) -> tuple[int, int]:
+def find_win_move(board: list[list[str]], computer_symbol: str) -> tuple[int, int] | None:
     for row in range(3):
         for col in range(3):
             if is_valid_move(board, row, col):
@@ -54,7 +59,7 @@ def find_win_move(board: list[list[str]], computer_symbol: str) -> tuple[int, in
     return None
 
 
-def find_random_move(board: list[list[str]]) -> tuple[int, int]:
+def find_random_move(board: list[list[str]]) -> tuple[int, int] | None:
     for row in range(3):
         for col in range(3):
             if is_valid_move(board, row, col):
@@ -62,24 +67,29 @@ def find_random_move(board: list[list[str]]) -> tuple[int, int]:
 
     return None
 
-def get_computer_move(board: list[list[str]], computer_symbol: str) -> tuple[int, int]:
+
+def get_computer_move(board: list[list[str]], computer_symbol: str) -> tuple[int, int] | None:
     move = find_win_move(board, computer_symbol)
     if move:
         return move
 
-    return find_random_move(board)
+    random_move = find_random_move(board)
+    if random_move:
+        row, col = random_move
+        return row, col
+
+    return None
 
 
-def get_player_move(board: list[list[str]], symbol: str, player_name: str) -> tuple[int, int]:
-    Move = namedtuple('Move', ['row', 'col'])
+def get_player_move(board: list[list[str]], symbol: str, player_name: str) -> Move:
     row = int(input(f'Please enter row number, {player_name} (0, 1, 2): '))
     col = int(input(f'Please enter col number, {player_name} (0, 1, 2): '))
     return Move(row=row, col=col)
 
 
-def announce_winner(winner: str) -> None:
-    if winner:
-        print("{} won!".format(winner))
+def announce_winner(winner: str | None) -> None:
+    if winner is not None:
+        print(f'{winner} won!')
     else:
         print("It's a tie!")
 
@@ -103,9 +113,14 @@ def tic_tac_toe_game() -> None:
                 print("Oh, it is invalid move, try again please")
                 continue
         else:
-            row, col = get_computer_move(board, computer_symbol=computer_symbol)
-            board[row][col] = computer_symbol
-            player_symbol, computer_symbol = computer_symbol, player_symbol
+            move = get_computer_move(board, computer_symbol=computer_symbol)
+            if move is not None:
+                row, col = move
+                board[row][col] = computer_symbol
+                player_symbol, computer_symbol = computer_symbol, player_symbol
+            else:
+                print("It's a tie!")
+                break
         winner = check_win(board)
     display_board(board)
     announce_winner(winner)
@@ -113,5 +128,6 @@ def tic_tac_toe_game() -> None:
 
 if __name__ == '__main__':
     tic_tac_toe_game()
+
 
 
