@@ -1,4 +1,6 @@
 import random
+from collections import namedtuple
+
 from constants import EMPTY_CELL
 
 
@@ -51,6 +53,7 @@ def find_win_move(board: list[list[str]], computer_symbol: str) -> tuple[int, in
                 board[row][col] = EMPTY_CELL
     return None
 
+
 def find_random_move(board: list[list[str]]) -> tuple[int, int]:
     for row in range(3):
         for col in range(3):
@@ -67,10 +70,11 @@ def get_computer_move(board: list[list[str]], computer_symbol: str) -> tuple[int
     return find_random_move(board)
 
 
-def get_player_move(board: list[list[str]], symbol: str, player_name: str) -> dict:
+def get_player_move(board: list[list[str]], symbol: str, player_name: str) -> tuple[int, int]:
+    Move = namedtuple('Move', ['row', 'col'])
     row = int(input(f'Please enter row number, {player_name} (0, 1, 2): '))
     col = int(input(f'Please enter col number, {player_name} (0, 1, 2): '))
-    return {"row": row, "col": col}
+    return Move(row=row, col=col)
 
 
 def announce_winner(winner: str) -> None:
@@ -92,8 +96,8 @@ def tic_tac_toe_game() -> None:
         display_board(board)
         if player_symbol == symbols[0]:
             player_move = get_player_move(board, player_symbol, player_name)
-            if is_valid_move(board, player_move['row'], player_move['col']):
-                board[player_move['row']][player_move['col']] = symbols[1]
+            if is_valid_move(board, player_move.row, player_move.col):
+                board[player_move.row][player_move.col] = symbols[1]
                 player_symbol, computer_symbol = computer_symbol, player_symbol
             else:
                 print("Oh, it is invalid move, try again please")
@@ -107,7 +111,7 @@ def tic_tac_toe_game() -> None:
     announce_winner(winner)
 
 
-
 if __name__ == '__main__':
     tic_tac_toe_game()
+
 
