@@ -1,11 +1,6 @@
 import random
 from constants import EMPTY_CELL
-from typing import NamedTuple
-
-
-class Move(NamedTuple):
-    row: int
-    col: int
+from custom_types import Move
 
 
 def welcome_message() -> None:
@@ -86,20 +81,7 @@ def get_player_move(board: list[list[str]], symbol: str, player_name: str) -> Mo
     return Move(row=row, col=col)
 
 
-def announce_winner(winner: str | None) -> None:
-    if winner is not None:
-        print(f'Game over, congratulations {winner}!')
-    else:
-        print("It's a tie!")
-
-
-def tic_tac_toe_game() -> None:
-    welcome_message()
-    player_name = get_player_name()
-    board = initialize_board()
-    symbols = ['X', 'O']
-    player_symbol = random.choice(symbols)
-    computer_symbol = symbols[0] if player_symbol == symbols[1] else symbols[1]
+def gameplay(board: list[list[str]], symbols: list[str], player_name: str, player_symbol: str, computer_symbol: str) -> str | None:
     winner = EMPTY_CELL
     while winner == EMPTY_CELL:
         display_board(board)
@@ -125,9 +107,22 @@ def tic_tac_toe_game() -> None:
     announce_winner(winner)
 
 
+def announce_winner(winner: str | None) -> None:
+    if winner is not None:
+        print(f'Game over, congratulations {winner}!')
+    else:
+        print("It's a tie!")
+
+
+def tic_tac_toe_game() -> None:
+    welcome_message()
+    player_name = get_player_name()
+    board = initialize_board()
+    symbols = ['X', 'O']
+    player_symbol = random.choice(symbols)
+    computer_symbol = symbols[0] if player_symbol == symbols[1] else symbols[1]
+    gameplay(board, symbols, player_name, player_symbol, computer_symbol)
+
+
 if __name__ == '__main__':
     tic_tac_toe_game()
-
-
-
-
