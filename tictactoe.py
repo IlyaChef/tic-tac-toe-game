@@ -1,5 +1,5 @@
 import random
-from constants import EMPTY_CELL
+from constants import BOARD_SIZE, EMPTY_CELL
 from custom_types import Move
 
 
@@ -22,7 +22,7 @@ def display_board(board: list[list[str]]) -> None:
 
 
 def initialize_board() -> list[list[str]]:
-   return [[EMPTY_CELL for col in range(3)] for row in range(3)]
+   return [[EMPTY_CELL for col in range(BOARD_SIZE)] for row in range(BOARD_SIZE)]
 
 
 def is_valid_move(board: list[list[str]], row: int, col: int) -> bool:
@@ -30,7 +30,7 @@ def is_valid_move(board: list[list[str]], row: int, col: int) -> bool:
 
 
 def check_win(board: list[list[str]]) -> str:
-    for coord in range(3):
+    for coord in range(BOARD_SIZE):
         if board[coord][0] == board[coord][1] == board[coord][2] and board[coord][0] != EMPTY_CELL:
             return board[coord][0]
         if board[0][coord] == board[1][coord] == board[2][coord] and board[0][coord] != EMPTY_CELL:
@@ -43,8 +43,8 @@ def check_win(board: list[list[str]]) -> str:
 
 
 def find_win_move(board: list[list[str]], computer_symbol: str) -> tuple[int, int] | None:
-    for row in range(3):
-        for col in range(3):
+    for row in range(BOARD_SIZE):
+        for col in range(BOARD_SIZE):
             if is_valid_move(board, row, col):
                 board[row][col] = computer_symbol
                 if check_win(board) == computer_symbol:
@@ -54,8 +54,8 @@ def find_win_move(board: list[list[str]], computer_symbol: str) -> tuple[int, in
 
 
 def find_random_move(board: list[list[str]]) -> tuple[int, int] | None:
-    for row in range(3):
-        for col in range(3):
+    for row in range(BOARD_SIZE):
+        for col in range(BOARD_SIZE):
             if is_valid_move(board, row, col):
                 return row, col
 
@@ -81,7 +81,7 @@ def get_player_move(board: list[list[str]], symbol: str, player_name: str) -> Mo
     return Move(row=row, col=col)
 
 
-def gameplay(board: list[list[str]], symbols: list[str], player_name: str, player_symbol: str, computer_symbol: str) -> str | None:
+def take_turns(board: list[list[str]], symbols: list[str], player_name: str, player_symbol: str, computer_symbol: str) -> str | None:
     winner = EMPTY_CELL
     while winner == EMPTY_CELL:
         display_board(board)
@@ -121,7 +121,7 @@ def tic_tac_toe_game() -> None:
     symbols = ['X', 'O']
     player_symbol = random.choice(symbols)
     computer_symbol = symbols[0] if player_symbol == symbols[1] else symbols[1]
-    gameplay(board, symbols, player_name, player_symbol, computer_symbol)
+    take_turns(board, symbols, player_name, player_symbol, computer_symbol)
 
 
 if __name__ == '__main__':
