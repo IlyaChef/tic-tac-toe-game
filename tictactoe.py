@@ -14,11 +14,10 @@ def get_player_name() -> str:
 
 
 def display_board(board: list[list[str]]) -> None:
-    print(f" {board[0][0]} | {board[0][1]} | {board[0][2]} ")
-    print("---+---+---")
-    print(f" {board[1][0]} | {board[1][1]} | {board[1][2]} ")
-    print("---+---+---")
-    print(f" {board[2][0]} | {board[2][1]} | {board[2][2]} ")
+    for row in range(BOARD_SIZE):
+        print(EMPTY_CELL + " | ".join(board[row]) + EMPTY_CELL)
+        if row != BOARD_SIZE - 1:
+            print("----" * BOARD_SIZE)
 
 
 def initialize_board() -> list[list[str]]:
@@ -26,19 +25,19 @@ def initialize_board() -> list[list[str]]:
 
 
 def is_valid_move(board: list[list[str]], row: int, col: int) -> bool:
-    return not (row < 0 or row > 2 or col < 0 or col > 2) and board[row][col] == EMPTY_CELL
+    return not (row < 0 or row >= BOARD_SIZE or col < 0 or col >= BOARD_SIZE) and board[row][col] == EMPTY_CELL
 
 
-def check_win(board: list[list[str]]) -> str:
-    for coord in range(BOARD_SIZE):
-        if board[coord][0] == board[coord][1] == board[coord][2] and board[coord][0] != EMPTY_CELL:
+def check_win(board: list[list[str]], size: int) -> str:
+    for coord in range(size):
+        if all(board[coord][i] == board[coord][0] and board[coord][0] != EMPTY_CELL for i in range(size)):
             return board[coord][0]
-        if board[0][coord] == board[1][coord] == board[2][coord] and board[0][coord] != EMPTY_CELL:
+        if all(board[i][coord] == board[0][coord] and board[0][coord] != EMPTY_CELL for i in range(size)):
             return board[0][coord]
-    if board[0][0] == board[1][1] == board[2][2] and board[0][0] != EMPTY_CELL:
+    if all(board[i][i] == board[0][0] and board[0][0] != EMPTY_CELL for i in range(size)):
         return board[0][0]
-    if board[0][2] == board[1][1] == board[2][0] and board[0][2] != EMPTY_CELL:
-        return board[0][2]
+    if all(board[i][size-i-1] == board[0][size-1] and board[0][size-1] != EMPTY_CELL for i in range(size)):
+        return board[0][size-1]
     return EMPTY_CELL
 
 
@@ -47,7 +46,7 @@ def find_win_move(board: list[list[str]], computer_symbol: str) -> tuple[int, in
         for col in range(BOARD_SIZE):
             if is_valid_move(board, row, col):
                 board[row][col] = computer_symbol
-                if check_win(board) == computer_symbol:
+                if check_win(board, BOARD_SIZE) == computer_symbol:
                     return row, col
                 board[row][col] = EMPTY_CELL
     return None
@@ -75,9 +74,9 @@ def get_computer_move(board: list[list[str]], computer_symbol: str) -> tuple[int
     return None
 
 
-def get_player_move(board: list[list[str]], symbol: str, player_name: str) -> Move:
-    row = int(input(f'Please enter row number, {player_name} (0, 1, 2): '))
-    col = int(input(f'Please enter col number, {player_name} (0, 1, 2): '))
+def get_player_move(board: list[list[str]], symbol: str, player_name: str, board_size: int) -> Move:
+    row = int(input(f'Please enter row number, {player_name} (0 - {board_size - 1}):  '))
+    col = int(input(f'Please enter col number, {player_name} (0 - {board_size - 1}):  '))
     return Move(row=row, col=col)
 
 
@@ -86,7 +85,7 @@ def take_turns(board: list[list[str]], symbols: list[str], player_name: str, pla
     while winner == EMPTY_CELL:
         display_board(board)
         if player_symbol == symbols[0]:
-            player_move = get_player_move(board, player_symbol, player_name)
+            player_move = get_player_move(board, player_symbol, player_name, BOARD_SIZE)
             if is_valid_move(board, player_move.row, player_move.col):
                 board[player_move.row][player_move.col] = symbols[1]
                 player_symbol, computer_symbol = computer_symbol, player_symbol
@@ -102,7 +101,7 @@ def take_turns(board: list[list[str]], symbols: list[str], player_name: str, pla
             else:
                 print("It's a tie!")
                 break
-        winner = check_win(board)
+        winner = check_win(board, BOARD_SIZE)
     display_board(board)
     announce_winner(winner)
 
