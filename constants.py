@@ -1,2 +1,4 @@
+BOARD_SIZE = 3
 EMPTY_CELL = ' '
+
 
