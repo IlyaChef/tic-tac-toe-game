@@ -3,7 +3,8 @@ from constants import BOARD_SIZE, EMPTY_CELL
 from custom_types import Move
 
 
-def welcome_message() -> None:
+
+def display_welcome_message() -> None:
     print('*' * 10, 'Welcome to Tic-Tac-Toe game!', '*' * 10)
 
 
@@ -67,9 +68,7 @@ def get_computer_move(board: list[list[str]], computer_symbol: str) -> tuple[int
         return move
 
     random_move = find_random_move(board)
-    if random_move:
-        row, col = random_move
-        return row, col
+    return random_move
 
     return None
 
@@ -114,7 +113,7 @@ def announce_winner(winner: str | None) -> None:
 
 
 def tic_tac_toe_game() -> None:
-    welcome_message()
+    display_welcome_message()
     player_name = get_player_name()
     board = initialize_board()
     symbols = ['X', 'O']
