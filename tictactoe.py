@@ -42,15 +42,25 @@ def check_win(board: list[list[str]], size: int) -> str:
     return EMPTY_CELL
 
 
-def find_win_move(board: list[list[str]], computer_symbol: str) -> tuple[int, int] | None:
+def try_move(board: list[list[str]], row: int, col: int, symbol: str) -> bool:
+    if board[row][col] != EMPTY_CELL:
+        return False
+    board[row][col] = symbol
+    return True
+
+
+def get_potential_win_move(board: list[list[str]], symbol: str) -> tuple[int, int] | None:
     for row in range(BOARD_SIZE):
         for col in range(BOARD_SIZE):
-            if is_valid_move(board, row, col):
-                board[row][col] = computer_symbol
-                if check_win(board, BOARD_SIZE) == computer_symbol:
+            if try_move(board, row, col, symbol):
+                if check_win(board, BOARD_SIZE) == symbol:
                     return row, col
                 board[row][col] = EMPTY_CELL
     return None
+
+
+def find_win_move(board: list[list[str]], computer_symbol: str) -> tuple[int, int] | None:
+    return get_potential_win_move(board, computer_symbol)
 
 
 def find_random_move(board: list[list[str]]) -> tuple[int, int] | None:
@@ -63,7 +73,7 @@ def find_random_move(board: list[list[str]]) -> tuple[int, int] | None:
 
 
 def get_computer_move(board: list[list[str]], computer_symbol: str) -> tuple[int, int] | None:
-    move = find_win_move(board, computer_symbol)
+    move = get_potential_win_move(board, computer_symbol)
     if move:
         return move
 
