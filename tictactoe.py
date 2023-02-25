@@ -53,7 +53,7 @@ def find_potential_win_move(board: list[list[str]], computer_symbol: str) -> tup
     for row in range(BOARD_SIZE):
         for col in range(BOARD_SIZE):
             if try_move(board, row, col, computer_symbol):
-                if check_win(board, BOARD_SIZE) == computer_symbol:
+                if try_move(board, row, col, computer_symbol) and check_win(board, BOARD_SIZE) == computer_symbol:
                     return row, col
                 board[row][col] = EMPTY_CELL
     return None
