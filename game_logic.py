@@ -2,8 +2,9 @@ from constants import BOARD_SIZE, EMPTY_CELL
 from custom_types import Move
 from user_interface import display_board
 
+
 def initialize_board() -> list[list[str]]:
-   return [[EMPTY_CELL for col in range(BOARD_SIZE)] for row in range(BOARD_SIZE)]
+    return [[EMPTY_CELL for col in range(BOARD_SIZE)] for row in range(BOARD_SIZE)]
 
 
 def is_valid_move(board: list[list[str]], row: int, col: int) -> bool:
@@ -18,8 +19,8 @@ def check_win(board: list[list[str]], size: int) -> str:
             return board[0][coord]
     if all(board[i][i] == board[0][0] and board[0][0] != EMPTY_CELL for i in range(size)):
         return board[0][0]
-    if all(board[i][size-i-1] == board[0][size-1] and board[0][size-1] != EMPTY_CELL for i in range(size)):
-        return board[0][size-1]
+    if all(board[i][size - i - 1] == board[0][size - 1] and board[0][size - 1] != EMPTY_CELL for i in range(size)):
+        return board[0][size - 1]
     return EMPTY_CELL
 
 
@@ -90,6 +91,7 @@ def take_turns(board: list[list[str]], symbols: list[str], player_name: str, pla
         winner = check_win(board, BOARD_SIZE)
     display_board(board)
     announce_winner(winner)
+    return winner
 
 
 def announce_winner(winner: str | None) -> None:
