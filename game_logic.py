@@ -1,31 +1,32 @@
-from constants import BOARD_SIZE, EMPTY_CELL
+from constants import BOARD_SIZE
 from custom_types import Move
 from user_interface import display_board
+from custom_types import Symbol
 
 
 def initialize_board() -> list[list[str]]:
-    return [[EMPTY_CELL for col in range(BOARD_SIZE)] for row in range(BOARD_SIZE)]
+    return [[Symbol.EMPTY.value for col in range(BOARD_SIZE)] for row in range(BOARD_SIZE)]
 
 
 def is_valid_move(board: list[list[str]], row: int, col: int) -> bool:
-    return not (row < 0 or row >= BOARD_SIZE or col < 0 or col >= BOARD_SIZE) and board[row][col] == EMPTY_CELL
+    return not (row < 0 or row >= BOARD_SIZE or col < 0 or col >= BOARD_SIZE) and board[row][col] == Symbol.EMPTY.value
 
 
 def check_win(board: list[list[str]], size: int) -> str:
     for coord in range(size):
-        if all(board[coord][i] == board[coord][0] and board[coord][0] != EMPTY_CELL for i in range(size)):
+        if all(board[coord][i] == board[coord][0] and board[coord][0] != Symbol.EMPTY.value for i in range(size)):
             return board[coord][0]
-        if all(board[i][coord] == board[0][coord] and board[0][coord] != EMPTY_CELL for i in range(size)):
+        if all(board[i][coord] == board[0][coord] and board[0][coord] != Symbol.EMPTY.value for i in range(size)):
             return board[0][coord]
-    if all(board[i][i] == board[0][0] and board[0][0] != EMPTY_CELL for i in range(size)):
+    if all(board[i][i] == board[0][0] and board[0][0] != Symbol.EMPTY.value for i in range(size)):
         return board[0][0]
-    if all(board[i][size - i - 1] == board[0][size - 1] and board[0][size - 1] != EMPTY_CELL for i in range(size)):
+    if all(board[i][size - i - 1] == board[0][size - 1] and board[0][size - 1] != Symbol.EMPTY.value for i in range(size)):
         return board[0][size - 1]
-    return EMPTY_CELL
+    return Symbol.EMPTY.value
 
 
 def try_move(board: list[list[str]], row: int, col: int, symbol: str) -> bool:
-    if board[row][col] != EMPTY_CELL:
+    if board[row][col] != Symbol.EMPTY.value:
         return False
     board[row][col] = symbol
     return True
@@ -68,8 +69,8 @@ def get_player_move(board: list[list[str]], symbol: str, player_name: str, board
 
 
 def take_turns(board: list[list[str]], symbols: list[str], player_name: str, player_symbol: str, computer_symbol: str) -> str | None:
-    winner = EMPTY_CELL
-    while winner == EMPTY_CELL:
+    winner = Symbol.EMPTY.value
+    while winner == Symbol.EMPTY.value:
         display_board(board)
         if player_symbol == symbols[0]:
             player_move = get_player_move(board, player_symbol, player_name, BOARD_SIZE)
