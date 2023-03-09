@@ -8,7 +8,7 @@ def tic_tac_toe_game() -> None:
     display_welcome_message()
     player_name = get_player_name()
     board = initialize_board()
-    symbols = [Symbol.X, Symbol.O]
+    symbols = [Symbol.X.value, Symbol.O.value]
     player_symbol = random.choice(symbols)
     computer_symbol = symbols[0] if player_symbol == symbols[1] else symbols[1]
     take_turns(board, symbols, player_name, player_symbol, computer_symbol)  # type: ignore
