@@ -1,48 +1,46 @@
 from constants import BOARD_SIZE
-from custom_types import Move
+from custom_types import Move, Symbol
 from user_interface import display_board
-from custom_types import Symbol
 
 
 def initialize_board() -> list[list[str]]:
     return [[Symbol.EMPTY.value for col in range(BOARD_SIZE)] for row in range(BOARD_SIZE)]
 
 
-def is_valid_move(board: list[list[str]], row: int, col: int) -> bool:
+def is_valid_move(board: list[list[Symbol]], row: int, col: int) -> bool:
     return not (row < 0 or row >= BOARD_SIZE or col < 0 or col >= BOARD_SIZE) and board[row][col] == Symbol.EMPTY.value
 
 
-def check_win(board: list[list[str]], size: int) -> str:
+def check_win(board: list[list[Symbol]], size: int) -> Symbol | str:
     for coord in range(size):
-        if all(board[coord][i] == board[coord][0] and board[coord][0] != Symbol.EMPTY.value for i in range(size)):
+        if all(board[coord][i] == board[coord][0] and board[coord][0] != Symbol.EMPTY for i in range(size)):
             return board[coord][0]
-        if all(board[i][coord] == board[0][coord] and board[0][coord] != Symbol.EMPTY.value for i in range(size)):
+        if all(board[i][coord] == board[0][coord] and board[0][coord] != Symbol.EMPTY for i in range(size)):
             return board[0][coord]
-    if all(board[i][i] == board[0][0] and board[0][0] != Symbol.EMPTY.value for i in range(size)):
+    if all(board[i][i] == board[0][0] and board[0][0] != Symbol.EMPTY for i in range(size)):
         return board[0][0]
-    if all(board[i][size - i - 1] == board[0][size - 1] and board[0][size - 1] != Symbol.EMPTY.value for i in range(size)):
+    if all(board[i][size - i - 1] == board[0][size - 1] and board[0][size - 1] != Symbol.EMPTY for i in range(size)):
         return board[0][size - 1]
     return Symbol.EMPTY.value
 
 
-def try_move(board: list[list[str]], row: int, col: int, symbol: str) -> bool:
-    if board[row][col] != Symbol.EMPTY.value:
+def try_move(board: list[list[Symbol]], row: int, col: int, symbol: str) -> bool:
+    if board[row][col] != Symbol.EMPTY:
         return False
-    board[row][col] = symbol
+    board[row][col] = Symbol(symbol)
     return True
 
 
-def find_potential_win_move(board: list[list[str]], computer_symbol: str) -> tuple[int, int] | None:
+def get_potential_win_move(board: list[list[Symbol]], computer_symbol: str) -> tuple[int, int] | None:
     for row in range(BOARD_SIZE):
         for col in range(BOARD_SIZE):
             board_copy = [row[:] for row in board]
-            if try_move(board_copy, row, col, computer_symbol):
-                if try_move(board_copy, row, col, computer_symbol) and check_win(board_copy, BOARD_SIZE) == computer_symbol:
-                    return row, col
+            if try_move(board_copy, row, col, computer_symbol) and check_win(board_copy, BOARD_SIZE) == Symbol(computer_symbol):
+                return row, col
     return None
 
 
-def find_random_move(board: list[list[str]]) -> tuple[int, int] | None:
+def find_random_move(board: list[list[Symbol]]) -> tuple[int, int] | None:
     for row in range(BOARD_SIZE):
         for col in range(BOARD_SIZE):
             if is_valid_move(board, row, col):
@@ -51,8 +49,8 @@ def find_random_move(board: list[list[str]]) -> tuple[int, int] | None:
     return None
 
 
-def get_computer_move(board: list[list[str]], computer_symbol: str) -> tuple[int, int] | None:
-    move = find_potential_win_move(board, computer_symbol)
+def get_computer_move(board: list[list[Symbol]], computer_symbol: str) -> tuple[int, int] | None:
+    move = get_potential_win_move(board, computer_symbol)
     if move:
         return move
 
@@ -62,13 +60,13 @@ def get_computer_move(board: list[list[str]], computer_symbol: str) -> tuple[int
     return None
 
 
-def get_player_move(board: list[list[str]], symbol: str, player_name: str, board_size: int) -> Move:
+def get_player_move(board: list[list[Symbol]], symbol: str, player_name: str, board_size: int) -> Move:
     row = int(input(f'Please enter row number, {player_name} (0 - {board_size - 1}):  '))
     col = int(input(f'Please enter col number, {player_name} (0 - {board_size - 1}):  '))
     return Move(row=row, col=col)
 
 
-def take_turns(board: list[list[str]], symbols: list[str], player_name: str, player_symbol: str, computer_symbol: str) -> str | None:
+def take_turns(board: list[list[Symbol]], symbols: list[Symbol], player_name: str, player_symbol: str, computer_symbol: str) -> str | None:
     winner = Symbol.EMPTY.value
     while winner == Symbol.EMPTY.value:
         display_board(board)
@@ -81,15 +79,15 @@ def take_turns(board: list[list[str]], symbols: list[str], player_name: str, pla
                 print("Oh, it is invalid move, try again please")
                 continue
         else:
-            move = get_computer_move(board, computer_symbol=computer_symbol)
+            move = get_computer_move(board, computer_symbol=Symbol(computer_symbol).value)
             if move is not None:
                 row, col = move
-                board[row][col] = computer_symbol
+                board[row][col] = Symbol(computer_symbol).value  # type: ignore
                 player_symbol, computer_symbol = computer_symbol, player_symbol
             else:
                 print("It's a tie!")
                 break
-        winner = check_win(board, BOARD_SIZE)
+        winner = check_win(board, BOARD_SIZE)  # type: ignore
     display_board(board)
     announce_winner(winner)
     return winner
