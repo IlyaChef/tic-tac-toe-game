@@ -1,4 +1,4 @@
-from constants import BOARD_SIZE, SYMBOL_TO_STRING
+from constants import BOARD_SIZE
 from custom_types import Symbol
 
 
@@ -12,8 +12,8 @@ def get_player_name() -> str:
     return name
 
 
-def display_board(board: list[list[str]]) -> None:
+def display_board(board: list[list[Symbol]]) -> None:
     for row in range(BOARD_SIZE):
-        print(Symbol.EMPTY.value + " | ".join(SYMBOL_TO_STRING.get(symbol, str(symbol)) for symbol in board[row]) + Symbol.EMPTY.value)  # type: ignore
+        print(Symbol.EMPTY.value + " | ".join(str(symbol) for symbol in board[row]) + Symbol.EMPTY.value)
         if row != BOARD_SIZE - 1:
             print("----" * BOARD_SIZE)
