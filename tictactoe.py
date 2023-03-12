@@ -11,7 +11,7 @@ def tic_tac_toe_game() -> None:
     symbols = [Symbol.X.value, Symbol.O.value]
     player_symbol = random.choice(symbols)
     computer_symbol = symbols[0] if player_symbol == symbols[1] else symbols[1]
-    take_turns(board, symbols, player_name, player_symbol, computer_symbol)  # type: ignore
+    take_turns(board, symbols, player_name, player_symbol, computer_symbol)
 
 
 if __name__ == '__main__':
