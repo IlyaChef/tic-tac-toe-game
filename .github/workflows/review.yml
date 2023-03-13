@@ -19,7 +19,5 @@ jobs:
         run: pip install -r requirements.txt
       - name: Run flake8
         run: flake8 .
-      - name: Set PYTHONPATH
-        run: export PYTHONPATH="${PYTHONPATH}:$(pwd)"
       - name: Run tests
-        run: pytest
+        run: python -m pytest
