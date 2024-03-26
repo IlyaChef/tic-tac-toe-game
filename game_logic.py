@@ -4,7 +4,7 @@ from user_interface import display_board
 
 
 def initialize_board() -> list[list[Symbol]]:
-    return [[Symbol.EMPTY for col in range(BOARD_SIZE)] for row in range(BOARD_SIZE)]
+    return [[Symbol.EMPTY.value for col in range(BOARD_SIZE)] for row in range(BOARD_SIZE)]
 
 
 def is_valid_move(board: list[list[Symbol]], row: int, col: int) -> bool:
@@ -21,13 +21,13 @@ def check_win(board: list[list[Symbol]], size: int) -> Symbol:
         return board[0][0]
     if all(board[i][size - i - 1] == board[0][size - 1] and board[0][size - 1] != Symbol.EMPTY for i in range(size)):
         return board[0][size - 1]
-    return Symbol.EMPTY
+    return Symbol.EMPTY.value
 
 
 def try_move(board: list[list[Symbol]], row: int, col: int, symbol: str) -> bool:
     if board[row][col] != Symbol.EMPTY:
         return False
-    board[row][col] = symbol
+    board[row][col] = Symbol(symbol)
     return True
 
 
@@ -60,25 +60,26 @@ def get_computer_move(board: list[list[Symbol]], computer_symbol: str) -> tuple[
     return None
 
 
-def get_player_move(board: list[list[Symbol]], symbol: str, player_name: str, board_size: int) -> Move:
+def get_player_move(board: list[list[Symbol]], symbol: Symbol, player_name: str, board_size: int) -> Move:
     row = int(input(f'Please enter row number, {player_name} (0 - {board_size - 1}):  '))
     col = int(input(f'Please enter col number, {player_name} (0 - {board_size - 1}):  '))
     return Move(row=row, col=col)
 
 
-def take_turns(board: list[list[Symbol]], symbols: list[str], player_name: str, player_symbol: str, computer_symbol: str) -> Symbol | str:
+def take_turns(board: list[list[Symbol]], symbols: list[Symbol], player_name: str, player_symbol: Symbol, computer_symbol: Symbol) -> Symbol | str:
     winner: Symbol | str = Symbol.EMPTY.value
     while winner == Symbol.EMPTY.value:
         display_board(board)
-        if player_symbol == symbols[0]:
+        if player_symbol == Symbol(symbols[0]):
             player_move = get_player_move(board, player_symbol, player_name, BOARD_SIZE)
             if is_valid_move(board, player_move.row, player_move.col):
-                board[player_move.row][player_move.col] = symbols[1]
+                board[player_move.row][player_move.col] = Symbol(symbols[1]).value
                 player_symbol, computer_symbol = computer_symbol, player_symbol
             else:
                 print("Oh, it is invalid move, try again please")
                 continue
         else:
+            print("Computer move:")
             move = get_computer_move(board, computer_symbol=Symbol(computer_symbol).value)
             if move is not None:
                 row, col = move
